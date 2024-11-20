@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>테트리스 게임</title>
+    <style>
+        .container {
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .game-board {
+            width: 300px;
+            height: 600px;
+            background-color: #f0f0f0;
+            border: 2px solid #333;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(20, 1fr);
+        }
+
+        .game-info {
+            padding: 20px;
+        }
+
+        .cell {
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+
+        .piece {
+            background-color: #00f;
+        }
+
+        .next-piece {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #333;
+            margin: 20px 0;
+        }
+
+        #start-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="game-board"></div>
+        <div class="game-info">
+            <div class="score">점수: <span id="score">0</span></div>
+            <div class="next-piece">다음 블록</div>
+            <button id="start-btn">게임 시작</button>
+        </div>
+    </div>
+
+    <script>
+        class Tetris {
+            constructor() {
+                this.boardWidth = 10;
+                this.boardHeight = 20;
+                this.board = Array(this.boardHeight).fill().map(() => Array(this.boardWidth).fill(0));
+                this.score = 0;
+                this.gameBoard = document.querySelector('.game-board');
+                this.scoreElement = document.getElementById('score');
+                this.createBoard();
+                
+                // 테트리미노 모양 정의
+                this.shapes = {
+                    I: [[1,1,1,1]],
+                    L: [[1,0],[1,0],[1,1]],
+                    J: [[0,1],[0,1],[1,1]],
+                    O: [[1,1],[1,1]],
+                    Z: [[1,1,0],[0,1,1]],
+                    S: [[0,1,1],[1,1,0]],
+                    T: [[1,1,1],[0,1,0]]
+                };
+                
+                this.currentPiece = null;
+                this.currentPiecePosition = {x: 0, y: 0};
+            }
+
+            createBoard() {
+                for(let i = 0; i < this.boardHeight; i++) {
+                    for(let j = 0; j < this.boardWidth; j++) {
+                        const cell = document.createElement('div');
+                        cell.classList.add('cell');
+                        this.gameBoard.appendChild(cell);
+                    }
+                }
+            }
+
+            start() {
+                this.generateNewPiece();
+                this.gameLoop();
+            }
+
+            generateNewPiece() {
+                const shapes = Object.keys(this.shapes);
+                const randomShape = shapes[Math.floor(Math.random() * shapes.length)];
+                this.currentPiece = this.shapes[randomShape];
+                this.currentPiecePosition = {
+                    x: Math.floor(this.boardWidth / 2) - Math.floor(this.currentPiece[0].length / 2),
+                    y: 0
+                };
+            }
+
+            gameLoop() {
+                setInterval(() => {
+                    this.moveDown();
+                    this.updateBoard();
+                }, 1000);
+            }
+
+            moveDown() {
+                this.currentPiecePosition.y++;
+                if (this.checkCollision()) {
+                    this.currentPiecePosition.y--;
+                    this.mergePiece();
+                    this.generateNewPiece();
+                }
+            }
+
+            checkCollision() {
+                // 충돌 검사 로직
+                return false;
+            }
+
+            mergePiece() {
+                // 현재 조각을 보드에 고정
+            }
+
+            updateBoard() {
+                // 게임 보드 업데이트
+            }
+        }
+
+        // 게임 시작
+        document.getElementById('start-btn').addEventListener('click', () => {
+            const game = new Tetris();
+            game.start();
+        });
+    </script>
+</body>
+</html>
