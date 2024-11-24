@@ -10,3 +10,4 @@ def intersect(prelist, postlist):
 #호출
 print( intersect("HAM", "SPAM") )
 
+ 
